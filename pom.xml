@@ -11,6 +11,8 @@
 		<module>springmvc-02-HelloWorld</module>
     <module>springmvc-02</module>
     <module>springmvc-03</module>
+    <module>springmvc-04-param</module>
+    <module>springmvc-05</module>
   </modules>
 
 	<!-- 作用:声明依赖(管理依赖),但是不引入依赖,由子工程决定自己需要的依赖 -->
@@ -32,6 +34,18 @@
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-webmvc</artifactId>
 				<version>5.2.2.RELEASE</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>org.projectlombok</groupId>
+				<artifactId>lombok</artifactId>
+				<version>1.18.10</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-databind</artifactId>
+				<version>2.9.5</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
