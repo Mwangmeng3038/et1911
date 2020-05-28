@@ -2,6 +2,7 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 		xmlns:mvc="http://www.springframework.org/schema/mvc"
 		xmlns:context="http://www.springframework.org/schema/context"
+
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		xsi:schemaLocation="
 		http://www.springframework.org/schema/beans
@@ -11,39 +12,104 @@
 		http://www.springframework.org/schema/mvc
 		http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
 		">
-		<!-- 配置注解扫描 -->
+		
+		<!-- 1.配置注解扫描  -->
 		<context:component-scan base-package="com.etoak">
 			<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
 			<context:include-filter type="annotation" expression="org.springframework.web.bind.annotation.RestController"/>
+			<context:include-filter type="annotation" expression="org.springframework.web.bind.annotation.ControllerAdvice"/>
+			
+			<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service"/>
+			<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Repository"/>
+
+			
 		</context:component-scan>
 		
+		<!-- 2.开启springmvc   -->
+		<mvc:annotation-driven>
 		
-		<!-- 开启spring mvc配置 -->
+		</mvc:annotation-driven>
 		
-		<mvc:annotation-driven></mvc:annotation-driven>
-		
-		<!-- =========================spring mvc的静态资源处理方式======================== -->
-	
-		<!-- 将静态资源(css js)等交给servlet容器内置的名字叫default -->
+		<!-- 3.将静态资源 （css js）交给WEB容器  default的servlet处理 -->
 		<mvc:default-servlet-handler/>
 		
-		<!-- 整合Thymeleaf -->
-		<bean id="templateResolver" class="org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver">
-			<property name="prefix" value="/templates/" />
-			<property name="suffix" value=".html" />
-			<property name="characterEncoding" value="UTF-8" />
-			<property name="templateMode" value="HTML" />
-			<!-- 在开发环境下设置成false,方便调试 -->
-			<property name="cacheable" value="false"></property>
+		<!-- 定义图片的访问方式 -->
+		<mvc:resources location="file:d:/upload/" mapping="/pic/**"/>
+		
+		<!-- 整合thymeleaf -->
+		<bean id="templateResolver"
+		class="org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver">
+			<property name="prefix" value="/templates/"/>
+			<property name="suffix" value=".html"/>
+			<property name="characterEncoding" value="UTF-8"/>
+			<property name="templateMode" value="HTML"/>
+			<!-- 在开发环境下设置成false 方便调试页面 -->
+			<property name="cacheable" value="false"/>
 		</bean>
 		
-		<bean id="templateEngine" class="org.thymeleaf.spring5.SpringTemplateEngine">
-			<property name="templateResolver" ref="templateResolver" />
+		<bean id="templateEngine"
+		class="org.thymeleaf.spring5.SpringTemplateEngine">
+			<property name="templateResolver" 
+			ref="templateResolver"/>
 		</bean>
 		
 		<bean class="org.thymeleaf.spring5.view.ThymeleafViewResolver">
-			<property name="templateEngine" ref="templateEngine" />
+			<property name="templateEngine" ref="templateEngine"/>
 			<property name="characterEncoding" value="UTF-8"></property>
 		</bean>
 		
+		<!-- 文件上传解析器,id必须是这个名字 -->
+		<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+			<property name="maxUploadSize" value="2097152000"></property>
+		</bean>
+		
+		<mvc:view-controller path="/" view-name="index" />
+		
+		<mvc:view-controller path="/user/toLogin" view-name="login" />
+		
+		<mvc:interceptors>
+			<mvc:interceptor>
+				<!-- 配置需要拦截的地址,/**表示拦截所有层级的请求 -->
+				<mvc:mapping path="/**"/>
+				<!-- 配置不需要拦截请求地址 -->
+				<mvc:exclude-mapping path="/static/**"/>
+				<mvc:exclude-mapping path="/code"/>
+				<mvc:exclude-mapping path="/user/toLogin"/>
+				<mvc:exclude-mapping path="/user/login"/>
+				<bean class="com.etoak.interceptor.LoginInterceptor"></bean>
+			</mvc:interceptor>
+		</mvc:interceptors>
+		
 </beans>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
